@@ -7,5 +7,6 @@ pkgs.mkShell {
     unzip
     ripgrep
     jq
+    jadx
   ];
 }
