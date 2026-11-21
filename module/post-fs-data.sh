@@ -19,12 +19,18 @@ resetprop -n ro.launcher.blur.appLaunch 1
 resetprop -n ro.surface_flinger.supports_background_blur 1
 resetprop -n persist.sys.one_shot_blur_enabled true
 resetprop -n debug.blur.enable true
-resetprop -n persist.blur.GPU.enable true
 resetprop -n persist.debug.systemeffect.switch true
 resetprop -n persist.debug.systemeffect.enable true
 resetprop -n persist.debug.pertexteffect.switch true
 resetprop -n persist.debug.BorderHighLightEffect.isG2 true
-resetprop -n persist.debug.blurlevel_4 true
+
+# Performance Optimization for Snapdragon 7 Gen 3 (Adreno 720)
+resetprop -n persist.debug.blurlevel_4 false
+resetprop -n debug.blur.dynamic.frameRate true
+resetprop -n persist.debug.qs_enable_hardware_optimize true
+resetprop -n persist.blur.GPU.enable true
+resetprop -n persist.blur.GPU.minlevel 60
+resetprop -n persist.blur.GPU.duration 600
 
 # Spacesystem and blur HAL properties
 resetprop -n ro.vendor.vivo.software.spacesystem 1
@@ -60,8 +66,8 @@ resetprop -n ro.vendor.vivo.software.vglasseffect:is_support_zygote 1
 
 resetprop -n ro.vendor.vivo.software.windowdeformblur 1
 resetprop -n ro.vendor.vivo.software.windowdeformblur:support_blur 1
-resetprop -n ro.vendor.vivo.software.windowdeformblur:min_blur_radius 11
-resetprop -n ro.vendor.vivo.software.windowdeformblur:min_blur_radius_temp 44
+resetprop -n ro.vendor.vivo.software.windowdeformblur:min_blur_radius 8
+resetprop -n ro.vendor.vivo.software.windowdeformblur:min_blur_radius_temp 24
 resetprop -n ro.vendor.vivo.software.windowdeformblur:vivo-support 1
 resetprop -n ro.vendor.vivo.software.windowdeformblur:is_support_zygote 1
 

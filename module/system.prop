@@ -3,12 +3,18 @@ ro.launcher.blur.appLaunch=1
 ro.surface_flinger.supports_background_blur=1
 persist.sys.one_shot_blur_enabled=true
 debug.blur.enable=true
-persist.blur.GPU.enable=true
 persist.debug.systemeffect.switch=true
 persist.debug.systemeffect.enable=true
 persist.debug.pertexteffect.switch=true
 persist.debug.BorderHighLightEffect.isG2=true
-persist.debug.blurlevel_4=true
+
+# Performance Optimization for Snapdragon 7 Gen 3 (Adreno 720)
+persist.debug.blurlevel_4=false
+debug.blur.dynamic.frameRate=true
+persist.debug.qs_enable_hardware_optimize=true
+persist.blur.GPU.enable=true
+persist.blur.GPU.minlevel=60
+persist.blur.GPU.duration=600
 
 # Spacesystem and blur HAL properties
 ro.vendor.vivo.software.spacesystem=1
@@ -44,8 +50,8 @@ ro.vendor.vivo.software.vglasseffect:is_support_zygote=1
 
 ro.vendor.vivo.software.windowdeformblur=1
 ro.vendor.vivo.software.windowdeformblur:support_blur=1
-ro.vendor.vivo.software.windowdeformblur:min_blur_radius=11
-ro.vendor.vivo.software.windowdeformblur:min_blur_radius_temp=44
+ro.vendor.vivo.software.windowdeformblur:min_blur_radius=8
+ro.vendor.vivo.software.windowdeformblur:min_blur_radius_temp=24
 ro.vendor.vivo.software.windowdeformblur:vivo-support=1
 ro.vendor.vivo.software.windowdeformblur:is_support_zygote=1
 

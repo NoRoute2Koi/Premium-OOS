@@ -24,14 +24,25 @@ This module patches configuration in-memory via KernelSU overlay mounts and runt
 - Retain temporary root (temproot) safety with zero physical disk modifications.
 - Manager Action button support to trigger soft reload without changing `realtime_blur_state`.
 - Clean unmount on module removal via `uninstall.sh` preventing resource busy errors.
+- Tailored performance tuning for Snapdragon 7 Gen 3 (Adreno 720) on 1.5K display resolution.
+
+## Performance Tuning for iQOO Z9
+
+To prevent micro-stutters and frame drops on Adreno 720:
+- **Deformation Blur Radius**: Scaled from 44 down to balanced 24 (`min_blur_radius_temp = 24`), halving GPU texture sampling overhead while preserving soft visual aesthetics.
+- **Dynamic Blur Frame Rate**: Enabled `debug.blur.dynamic.frameRate=true` allowing blur sessions to update asynchronously (60-90 fps) while window translations stay at 120/144 fps.
+- **Gradient Pass Optimization**: Disabled heavy `blurlevel_4` gradient passes (`persist.debug.blurlevel_4=false`) to eliminate fillrate bottlenecks.
+- **Quick Settings Optimization**: Enabled `persist.debug.qs_enable_hardware_optimize=true` for control center rendering.
+- **GPU Boost Floor**: Set `persist.blur.GPU.minlevel=60` and duration to 600ms to maintain GPU clocks during transition animations.
 
 ## Technical Architecture
 
 1. `vendor/etc/vivo_config.ini`:
-   - Configures `[vivo.software.spacesystem]`, `[vivo.software.spacesystem.borderlight]`, `[vivo.software.nativeblur]`, `[vivo.software.motionblur]`, `[vivo.software.asyncanimboost]`, `[vivo.software.vglasseffect]`, and `[vivo.software.realtimeblur]`.
+   - Configures `[vivo.software.spacesystem]`, `[vivo.software.spacesystem.borderlight]`, `[vivo.software.nativeblur]`, `[vivo.software.motionblur]`, `[vivo.software.asyncanimboost]`, `[vivo.software.vglasseffect]`, `[vivo.software.realtimeblur]`, and optimized `[vivo.software.windowdeformblur]`.
    - Injects `vivo-support = 1` and `is_support_zygote = 1` across all target sections so the HAL exports them to Zygote and System Server.
 2. `system.prop`:
    - Pre-seeds `ro.vendor.vivo.software.*` properties at early init to guarantee Zygote processes read supported flags immediately.
+   - Sets performance tuning properties for Adreno 720.
 3. `post-fs-data.sh`:
    - Sets `u:object_r:vendor_configs_file:s0` SELinux context on config mounts.
    - Provides an in-memory bind-mount fallback for `/vendor/etc/vivo_config.ini`.
@@ -70,7 +81,7 @@ The resulting package is placed in `out/premium-oos-v<VERSION>.zip`.
 
 ## Installation and Activation
 
-1. Transfer `out/premium-oos-v0.4.0.zip` to the device.
+1. Transfer `out/premium-oos-v0.5.0.zip` to the device.
 2. Flash the zip via KernelSU Manager (or APatch / Magisk).
 3. Activation:
    - For standard root: reboot the device.

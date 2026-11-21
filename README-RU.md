@@ -24,14 +24,25 @@
 - Полная безопасность для устройств с временным рутом (temproot) без перезаписи физических разделов.
 - Поддержка кнопки Action в менеджере для мягкой перезагрузки и перезапуска ConfigStore HAL без изменения `realtime_blur_state`.
 - Корректное размонтирование при удалении модуля (`uninstall.sh`) для предотвращения ошибок занятости файлов (`EBUSY`).
+- Комплекс оптимизаций рендеринга для чипсета Snapdragon 7 Gen 3 (Adreno 720) и экрана 1.5K.
+
+## Оптимизации производительности для iQOO Z9
+
+Для устранения микрофризов и просадок FPS на Adreno 720:
+- **Сбалансированный радиус деформации**: Значение радиуса размытия окон снижено с 44 до 24 (`min_blur_radius_temp = 24`), что снижает нагрузку на текстурные блоки GPU в два раза при сохранении мягкого визуального эффекта.
+- **Динамический фреймрейт блюра**: Включен параметр `debug.blur.dynamic.frameRate=true`. Это позволяет графическому движку обновлять саму текстуру размытия на 60–90 fps, в то время как перемещение окна остаётся плавным на 120/144 fps.
+- **Отключение избыточного градиента**: Снято форсирование тяжёлого уровня 4 (`persist.debug.blurlevel_4=false`), вызывающего упор в филлрейт памяти на экранах высокого разрешения.
+- **Аппаратная оптимизация шторки**: Активирован параметр `persist.debug.qs_enable_hardware_optimize=true`.
+- **Буст частот GPU**: Задан минимальный порог частоты Adreno при входе в анимацию блюра (`persist.blur.GPU.minlevel=60`, длительность 600 мс).
 
 ## Техническое устройство
 
 1. `vendor/etc/vivo_config.ini`:
-   - Настраивает секции `[vivo.software.spacesystem]`, `[vivo.software.spacesystem.borderlight]`, `[vivo.software.nativeblur]`, `[vivo.software.motionblur]`, `[vivo.software.asyncanimboost]`, `[vivo.software.vglasseffect]` и `[vivo.software.realtimeblur]`.
+   - Настраивает секции `[vivo.software.spacesystem]`, `[vivo.software.spacesystem.borderlight]`, `[vivo.software.nativeblur]`, `[vivo.software.motionblur]`, `[vivo.software.asyncanimboost]`, `[vivo.software.vglasseffect]`, `[vivo.software.realtimeblur]` и оптимизированный `[vivo.software.windowdeformblur]`.
    - Добавляет атрибуты `vivo-support = 1` и `is_support_zygote = 1` для корректного экспорта фич через ConfigStore HAL в Zygote и System Server.
 2. `system.prop`:
    - Задаёт системные свойства `ro.vendor.vivo.software.*` на ранней стадии инициализации Android.
+   - Задаёт оптимизации для видеоядра Adreno 720.
 3. `post-fs-data.sh`:
    - Назначает SELinux-контекст `u:object_r:vendor_configs_file:s0` для подмонтированных файлов.
    - Организует резервный bind-mount для `/vendor/etc/vivo_config.ini`.
@@ -70,7 +81,7 @@
 
 ## Установка и активация
 
-1. Перенесите `out/premium-oos-v0.4.0.zip` на устройство.
+1. Перенесите `out/premium-oos-v0.5.0.zip` на устройство.
 2. Прошейте zip через KernelSU Manager (или APatch / Magisk).
 3. Активация:
    - При стандартном постоянном root: выполните перезагрузку устройства.
