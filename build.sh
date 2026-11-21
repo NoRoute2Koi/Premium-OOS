@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-VERSION="0.2.0"
+VERSION=$(grep "^version=" module/module.prop | cut -d'=' -f2 | tr -d 'v')
 OUTPUT_DIR="out"
 ZIP_NAME="premium-oos-v${VERSION}.zip"
 

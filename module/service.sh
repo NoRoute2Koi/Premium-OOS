@@ -15,6 +15,8 @@ fi
 settings put system realtime_blur_state 1
 settings put secure realtime_blur_state 1
 settings put global realtime_blur_state 1
+settings put system reduced_dynamic_effects 0
+settings put global disable_window_blurs 0
 
 # Re-assert properties in case any service overrode them
 resetprop -n ro.launcher.blur.appLaunch 1
@@ -22,3 +24,7 @@ resetprop -n persist.sys.one_shot_blur_enabled true
 resetprop -n debug.blur.enable true
 resetprop -n persist.debug.systemeffect.switch true
 resetprop -n persist.debug.systemeffect.enable true
+resetprop -n ro.vendor.vivo.software.spacesystem:version 3
+resetprop -n ro.vendor.vivo.software.spacesystem:vivo-support 1
+resetprop -n ro.vendor.vivo.software.nativeblur:vivo-support 1
+resetprop -n ro.vendor.vivo.software.motionblur:vivo-support 1

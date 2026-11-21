@@ -1,6 +1,6 @@
 id=premium-oos
 name=Premium OriginOS (iQOO Z9)
-version=v0.2.0
-versionCode=20
+version=v0.3.0
+versionCode=30
 author=noroute2koi
-description=Unlocks OriginOS 6 flagship blur, translucency, and premium UI effects on iQOO Z9 without touching physical partitions.
+description=Unlocks OriginOS 6 flagship blur, translucency, spacesystem and premium UI effects on iQOO Z9 without touching physical partitions.

@@ -25,3 +25,47 @@ resetprop -n persist.debug.systemeffect.enable true
 resetprop -n persist.debug.pertexteffect.switch true
 resetprop -n persist.debug.BorderHighLightEffect.isG2 true
 resetprop -n persist.debug.blurlevel_4 true
+
+# Spacesystem and blur HAL properties
+resetprop -n ro.vendor.vivo.software.spacesystem 1
+resetprop -n ro.vendor.vivo.software.spacesystem:level 1
+resetprop -n ro.vendor.vivo.software.spacesystem:version 3
+resetprop -n ro.vendor.vivo.software.spacesystem:vivo-support 1
+resetprop -n ro.vendor.vivo.software.spacesystem:is_support_zygote 1
+
+resetprop -n ro.vendor.vivo.software.spacesystem.borderlight 1
+resetprop -n ro.vendor.vivo.software.spacesystem.borderlight:version 3
+resetprop -n ro.vendor.vivo.software.spacesystem.borderlight:vivo-support 1
+resetprop -n ro.vendor.vivo.software.spacesystem.borderlight:is_support_zygote 1
+
+resetprop -n ro.vendor.vivo.software.nativeblur 1
+resetprop -n ro.vendor.vivo.software.nativeblur:vivo-support 1
+resetprop -n ro.vendor.vivo.software.nativeblur:is_support_zygote 1
+
+resetprop -n ro.vendor.vivo.software.motionblur 1
+resetprop -n ro.vendor.vivo.software.motionblur:vivo-support 1
+resetprop -n ro.vendor.vivo.software.motionblur:is_support_zygote 1
+
+resetprop -n ro.vendor.vivo.software.asyncanimboost 1
+resetprop -n ro.vendor.vivo.software.asyncanimboost:vivo-support 1
+resetprop -n ro.vendor.vivo.software.asyncanimboost:is_support_zygote 1
+
+resetprop -n ro.vendor.vivo.software.realtimeblur 1
+resetprop -n ro.vendor.vivo.software.realtimeblur:vivo-support 1
+resetprop -n ro.vendor.vivo.software.realtimeblur:is_support_zygote 1
+
+resetprop -n ro.vendor.vivo.software.vglasseffect 1
+resetprop -n ro.vendor.vivo.software.vglasseffect:vivo-support 1
+resetprop -n ro.vendor.vivo.software.vglasseffect:is_support_zygote 1
+
+resetprop -n ro.vendor.vivo.software.windowdeformblur 1
+resetprop -n ro.vendor.vivo.software.windowdeformblur:support_blur 1
+resetprop -n ro.vendor.vivo.software.windowdeformblur:min_blur_radius 11
+resetprop -n ro.vendor.vivo.software.windowdeformblur:min_blur_radius_temp 44
+resetprop -n ro.vendor.vivo.software.windowdeformblur:vivo-support 1
+resetprop -n ro.vendor.vivo.software.windowdeformblur:is_support_zygote 1
+
+resetprop -n ro.vendor.vivo.software.systemeffect 1
+resetprop -n ro.vendor.vivo.software.systemeffect:system_effect_type 0
+resetprop -n ro.vendor.vivo.software.systemeffect:vivo-support 1
+resetprop -n ro.vendor.vivo.software.systemeffect:is_support_zygote 1
