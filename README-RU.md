@@ -22,6 +22,8 @@
 - Переключение системного рендера эффектов из режима Lite (`1`) в режим Full (`0`).
 - Включение аппаратного Native Blur, Motion Blur и эффектов полупрозрачности V-Glass.
 - Полная безопасность для устройств с временным рутом (temproot) без перезаписи физических разделов.
+- Поддержка кнопки Action в менеджере для мягкой перезагрузки и перезапуска ConfigStore HAL без изменения `realtime_blur_state`.
+- Корректное размонтирование при удалении модуля (`uninstall.sh`) для предотвращения ошибок занятости файлов (`EBUSY`).
 
 ## Техническое устройство
 
@@ -35,8 +37,14 @@
    - Организует резервный bind-mount для `/vendor/etc/vivo_config.ini`.
    - Задаёт параметры через `resetprop`.
 4. `service.sh`:
-   - Настраивает параметры в системных базах настроек (`realtime_blur_state=1`, `reduced_dynamic_effects=0`, `disable_window_blurs=0`).
+   - Настраивает параметры в системных базах настроек (`reduced_dynamic_effects=0`, `disable_window_blurs=0`).
    - Поддерживает свойства в активном состоянии после завершения загрузки.
+5. `action.sh`:
+   - Вызывается по нажатию кнопки Action в KernelSU / SukiSU Manager.
+   - Проверяет монтирование, перезапускает `vendor.vivo.hardware.configstore@1.0-service` и выполняет мягкую перезагрузку Zygote без перезаписи `realtime_blur_state`.
+6. `uninstall.sh`:
+   - Вызывается при удалении модуля в менеджере.
+   - Размонтирует слой `/vendor/etc/vivo_config.ini` во избежание блокировок inode (`Device or resource busy`).
 
 ## Безопасность
 
@@ -62,13 +70,13 @@
 
 ## Установка и активация
 
-1. Перенесите `out/premium-oos-v0.3.0.zip` на устройство.
+1. Перенесите `out/premium-oos-v0.4.0.zip` на устройство.
 2. Прошейте zip через KernelSU Manager (или APatch / Magisk).
 3. Активация:
    - При стандартном постоянном root: выполните перезагрузку устройства.
-   - При временном root (temproot), чтобы избежать слёта рута при холодной перезагрузке, выполните мягкую перезагрузку (перезапуск Zygote) через KernelSU Manager или в консоли root:
+   - При временном root (temproot): нажмите кнопку «Действие» (Action) рядом с модулем в менеджере KernelSU / SukiSU или выполните:
      ```bash
-     su -c "setprop ctl.restart zygote"
+     su -c "killall -9 vendor.vivo.hardware.configstore@1.0-service && setprop ctl.restart zygote"
      ```
 4. Проверка активации через adb shell:
    ```bash

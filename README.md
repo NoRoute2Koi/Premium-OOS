@@ -22,6 +22,8 @@ This module patches configuration in-memory via KernelSU overlay mounts and runt
 - Switch system effect profile from Lite (`1`) to Full (`0`).
 - Enable native blur, motion blur, and V-Glass translucency.
 - Retain temporary root (temproot) safety with zero physical disk modifications.
+- Manager Action button support to trigger soft reload without changing `realtime_blur_state`.
+- Clean unmount on module removal via `uninstall.sh` preventing resource busy errors.
 
 ## Technical Architecture
 
@@ -35,8 +37,14 @@ This module patches configuration in-memory via KernelSU overlay mounts and runt
    - Provides an in-memory bind-mount fallback for `/vendor/etc/vivo_config.ini`.
    - Injects required runtime flags via `resetprop`.
 4. `service.sh`:
-   - Configures settings providers (`realtime_blur_state=1`, `reduced_dynamic_effects=0`, `disable_window_blurs=0`).
+   - Configures settings providers (`reduced_dynamic_effects=0`, `disable_window_blurs=0`).
    - Ensures properties remain asserted after boot completion.
+5. `action.sh`:
+   - Triggered via the Action button in KernelSU / SukiSU Manager.
+   - Ensures bind mounts, restarts `vendor.vivo.hardware.configstore@1.0-service`, and triggers Zygote soft restart without altering `realtime_blur_state`.
+6. `uninstall.sh`:
+   - Triggered when the module is removed in Manager.
+   - Cleanly unmounts overlay mounts to prevent device busy (`EBUSY`) locks.
 
 ## Safe Architecture
 
@@ -62,13 +70,13 @@ The resulting package is placed in `out/premium-oos-v<VERSION>.zip`.
 
 ## Installation and Activation
 
-1. Transfer `out/premium-oos-v0.3.0.zip` to the device.
+1. Transfer `out/premium-oos-v0.4.0.zip` to the device.
 2. Flash the zip via KernelSU Manager (or APatch / Magisk).
 3. Activation:
-   - For regular root installations: perform a full reboot.
-   - For temporary root (temproot) installations: to preserve temproot across reboots, perform a soft reboot (restart Zygote) via KernelSU Manager or root shell:
+   - For standard root: reboot the device.
+   - For temporary root (temproot): tap the "Action" button next to the module in KernelSU / SukiSU Manager, or execute:
      ```bash
-     su -c "setprop ctl.restart zygote"
+     su -c "killall -9 vendor.vivo.hardware.configstore@1.0-service && setprop ctl.restart zygote"
      ```
 4. Verify activation via adb shell:
    ```bash
