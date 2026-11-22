@@ -97,3 +97,7 @@ The resulting package is placed in `out/premium-oos-v<VERSION>.zip`.
    ```
    The global configuration string should display `spacesystem` instead of `?spacesystem`.
 5. Allow the smartphone time for background optimization (leave it charging overnight undisturbed).
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 (GPLv3). See the [LICENSE](LICENSE) file for details.
