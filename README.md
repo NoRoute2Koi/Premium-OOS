@@ -1,8 +1,9 @@
-# premium-OOS
+# Premium-OOS
 
 English | [Русский](README-RU.md)
 
-KernelSU module to unlock flagship blur, translucency, and premium UI effects on iQOO Z9 (OriginOS 6).
+KernelSU module to unlock flagship blur, translucency, and premium UI effects on OriginOS 6.
+ONLY FOR Z9 YET
 
 ## Overview
 
