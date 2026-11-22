@@ -14,15 +14,9 @@ if [ -f "$MODDIR/vendor/etc/vivo_config.ini" ]; then
     mount -o bind "$MODDIR/vendor/etc/vivo_config.ini" /vendor/etc/vivo_config.ini 2>/dev/null
 fi
 
-# Reset properties early before Zygote and system_server read them
+# Capability flags
 resetprop -n ro.launcher.blur.appLaunch 1
 resetprop -n ro.surface_flinger.supports_background_blur 1
-resetprop -n persist.sys.one_shot_blur_enabled true
-resetprop -n debug.blur.enable true
-resetprop -n persist.debug.systemeffect.switch true
-resetprop -n persist.debug.systemeffect.enable true
-resetprop -n persist.debug.pertexteffect.switch true
-resetprop -n persist.debug.BorderHighLightEffect.isG2 true
 
 # Performance Optimization for Snapdragon 7 Gen 3 (Adreno 720)
 resetprop -n persist.debug.blurlevel_4 false

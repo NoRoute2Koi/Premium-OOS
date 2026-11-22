@@ -27,6 +27,7 @@ This module dynamically replaces configuration in-memory via KernelSU overlayfs 
 - Retain temporary root (temproot) safety with zero physical partition writes.
 - Manager Action button support for soft reload and ConfigStore HAL restart.
 - Clean unmount on module removal via `uninstall.sh` preventing resource busy errors (`EBUSY`).
+- Preserves user toggles in Settings ("Premium textures" and "App real-time blur"): the module unlocks system capabilities without forcing or overriding user preferences across reboots.
 - Rendering optimization suite for Snapdragon 7 Gen 3 (Adreno 720) and 1.5K display.
 
 ## Performance Tuning for iQOO Z9
@@ -51,8 +52,7 @@ To prevent micro-stutters and frame drops on Adreno 720:
    - Sets up a fallback bind-mount for `/vendor/etc/vivo_config.ini`.
    - Injects parameters via `resetprop`.
 4. `service.sh`:
-   - Configures settings in system settings providers (`reduced_dynamic_effects=0`, `disable_window_blurs=0`).
-   - Keeps properties asserted after boot completion.
+   - Ensures in-memory bind-mount consistency after system boot completes without overriding user settings (does not tamper with `realtime_blur_state` or `reduced_dynamic_effects`).
 5. `action.sh`:
    - Triggered via the Action button in KernelSU / SukiSU Manager.
    - Verifies mounts, restarts `vendor.vivo.hardware.configstore@1.0-service`, and performs a Zygote soft reboot.
@@ -84,7 +84,7 @@ The resulting package is placed in `out/premium-oos-v<VERSION>.zip`.
 
 ## Installation and Activation
 
-1. Transfer `out/premium-oos-v0.5.0.zip` to the device.
+1. Transfer `out/premium-oos-v0.6.0.zip` to the device.
 2. Flash the zip via KernelSU Manager (or APatch / Magisk).
 3. Activation:
    - For standard permanent root: reboot the device.

@@ -1,12 +1,6 @@
 # Premium UI Effects & Blur for OriginOS 6
 ro.launcher.blur.appLaunch=1
 ro.surface_flinger.supports_background_blur=1
-persist.sys.one_shot_blur_enabled=true
-debug.blur.enable=true
-persist.debug.systemeffect.switch=true
-persist.debug.systemeffect.enable=true
-persist.debug.pertexteffect.switch=true
-persist.debug.BorderHighLightEffect.isG2=true
 
 # Performance Optimization for Snapdragon 7 Gen 3 (Adreno 720)
 persist.debug.blurlevel_4=false
