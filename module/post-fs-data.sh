@@ -1,17 +1,12 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
 
+# Ensure root tools are in PATH
+export PATH="/data/adb/ksu/bin:/data/adb/ap/bin:/data/adb/magisk:$PATH"
+
 # Set correct SELinux context on config file
 if [ -f "$MODDIR/system/vendor/etc/vivo_config.ini" ]; then
     chcon u:object_r:vendor_configs_file:s0 "$MODDIR/system/vendor/etc/vivo_config.ini"
-fi
-if [ -f "$MODDIR/vendor/etc/vivo_config.ini" ]; then
-    chcon u:object_r:vendor_configs_file:s0 "$MODDIR/vendor/etc/vivo_config.ini"
-fi
-
-# Fallback in-memory bind mount if overlay is delayed
-if [ -f "$MODDIR/vendor/etc/vivo_config.ini" ]; then
-    mount -o bind "$MODDIR/vendor/etc/vivo_config.ini" /vendor/etc/vivo_config.ini 2>/dev/null
 fi
 
 # Capability flags

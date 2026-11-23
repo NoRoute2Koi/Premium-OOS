@@ -25,6 +25,8 @@ This module dynamically replaces configuration in-memory via KernelSU overlayfs 
 - Switch system effect profile from Lite (`1`) to Full (`0`).
 - Enable native hardware blur, motion blur, and V-Glass translucency.
 - Retain temporary root (temproot) safety with zero physical partition writes.
+- Robust installer with live update synchronization and protection against double mounting.
+- Full compatibility with metamodules such as Hybrid Mount.
 - Manager Action button support for soft reload and ConfigStore HAL restart.
 - Clean unmount on module removal via `uninstall.sh` preventing resource busy errors (`EBUSY`).
 - Preserves user toggles in Settings ("Premium textures" and "App real-time blur"): the module unlocks system capabilities without forcing or overriding user preferences across reboots.
@@ -41,24 +43,28 @@ To prevent micro-stutters and frame drops on Adreno 720:
 
 ## Technical Architecture
 
-1. `vendor/etc/vivo_config.ini`:
+1. `system/vendor/etc/vivo_config.ini`:
    - Configures `[vivo.software.spacesystem]`, `[vivo.software.spacesystem.borderlight]`, `[vivo.software.nativeblur]`, `[vivo.software.motionblur]`, `[vivo.software.asyncanimboost]`, `[vivo.software.vglasseffect]`, `[vivo.software.realtimeblur]`, and optimized `[vivo.software.windowdeformblur]`.
    - Adds `vivo-support = 1` and `is_support_zygote = 1` attributes for proper feature export via ConfigStore HAL into Zygote and System Server.
+   - Preserves canonical `system/vendor` layout compatible with system-as-root symlinks and Hybrid Mount metainstall without duplicate vendor folders.
 2. `system.prop`:
    - Sets `ro.vendor.vivo.software.*` system properties at early Android initialization.
    - Sets optimizations for the Adreno 720 graphics core.
-3. `post-fs-data.sh`:
-   - Assigns `u:object_r:vendor_configs_file:s0` SELinux context to mounted files.
-   - Sets up a fallback bind-mount for `/vendor/etc/vivo_config.ini`.
-   - Injects parameters via `resetprop`.
-4. `service.sh`:
-   - Ensures in-memory bind-mount consistency after system boot completes without overriding user settings (does not tamper with `realtime_blur_state` or `reduced_dynamic_effects`).
-5. `action.sh`:
+3. `customize.sh`:
+   - Sets secure permissions on scripts and directories.
+   - Syncs payload immediately to active modules directory when installing via KernelSU Manager (`modules_update`), enabling visibility without requiring a hard reboot.
+4. `post-fs-data.sh`:
+   - Assigns `u:object_r:vendor_configs_file:s0` SELinux context to mounted configuration.
+   - Injects capability properties via `resetprop`.
+   - Avoids premature manual bind-mounts to prevent collisions with metamodule overlay verification.
+5. `service.sh`:
+   - Ensures in-memory bind-mount consistency after system boot completes only if manager overlay is not already active.
+6. `action.sh`:
    - Triggered via the Action button in KernelSU / SukiSU Manager.
    - Verifies mounts, restarts `vendor.vivo.hardware.configstore@1.0-service`, and performs a Zygote soft reboot.
-6. `uninstall.sh`:
+7. `uninstall.sh`:
    - Triggered when removing the module in manager.
-   - Unmounts `/vendor/etc/vivo_config.ini` layers to prevent inode locks (`Device or resource busy`).
+   - Dynamically unmounts module overlay layers and removes injected properties to ensure a clean stock state.
 
 ## Safe Architecture
 
@@ -84,7 +90,7 @@ The resulting package is placed in `out/premium-oos-v<VERSION>.zip`.
 
 ## Installation and Activation
 
-1. Transfer `out/premium-oos-v0.6.0.zip` to the device.
+1. Transfer `out/premium-oos-v0.7.0.zip` to the device.
 2. Flash the zip via KernelSU Manager (or APatch / Magisk).
 3. Activation:
    - For standard permanent root: reboot the device.
