@@ -132,22 +132,42 @@ set_perm "$MODPATH/post-fs-data.sh" 0 0 0755
 set_perm "$MODPATH/service.sh" 0 0 0755
 set_perm "$MODPATH/uninstall.sh" 0 0 0755
 
-# 6. Temproot / live update support
+# 6. Temproot / live update & re-flash profile switching support
 if $BOOTMODE && echo "$MODPATH" | grep -q "modules_update"; then
     ui_print "- Live update detected: syncing to active modules..."
     REAL_MODPATH="/data/adb/modules/$MODID"
-    grep "modules/$MODID" /proc/mounts 2>/dev/null | cut -d' ' -f2 | while read -r mnt; do
-        umount -l "$mnt" 2>/dev/null || true
-    done
-    mkdir -p "$REAL_MODPATH"
-    cp -af "$MODPATH/." "$REAL_MODPATH/"
-    rm -f "$REAL_MODPATH/update"
-    rm -f "$REAL_MODPATH/customize.sh"
+    mkdir -p "$REAL_MODPATH/system/vendor/etc"
+    if [ -f "$REAL_MODPATH/system/vendor/etc/vivo_config.ini" ]; then
+        cat "$MODPATH/system/vendor/etc/vivo_config.ini" > "$REAL_MODPATH/system/vendor/etc/vivo_config.ini"
+        rm -f "$MODPATH/system/vendor/etc/vivo_config.ini"
+        cp -af "$MODPATH/." "$REAL_MODPATH/"
+        cp -af "$REAL_MODPATH/system/vendor/etc/vivo_config.ini" "$MODPATH/system/vendor/etc/vivo_config.ini"
+    else
+        cp -af "$MODPATH/." "$REAL_MODPATH/"
+    fi
+    rm -f "$REAL_MODPATH/update" "$REAL_MODPATH/remove" "$REAL_MODPATH/disable" "$REAL_MODPATH/customize.sh"
     set_perm_recursive "$REAL_MODPATH" 0 0 0755 0644
     set_perm "$REAL_MODPATH/action.sh" 0 0 0755
     set_perm "$REAL_MODPATH/patch_config.sh" 0 0 0755
     set_perm "$REAL_MODPATH/post-fs-data.sh" 0 0 0755
     set_perm "$REAL_MODPATH/service.sh" 0 0 0755
     set_perm "$REAL_MODPATH/uninstall.sh" 0 0 0755
-    ui_print "- Module active and updated without reboot"
+    chcon u:object_r:vendor_configs_file:s0 "$REAL_MODPATH/system/vendor/etc/vivo_config.ini" 2>/dev/null || true
+
+    # Apply profile properties immediately for live profile switching
+    case "$PROFILE" in
+        medium) RADIUS_TEMP=16; GPU_MIN=60; GPU_DUR=800 ;;
+        lite)   RADIUS_TEMP=8;  GPU_MIN=50; GPU_DUR=600 ;;
+        *)      RADIUS_TEMP=24; GPU_MIN=70; GPU_DUR=1000 ;;
+    esac
+    export PATH="/data/adb/ksu/bin:/data/adb/ap/bin:/data/adb/magisk:$PATH"
+    resetprop -p persist.debug.blurlevel_4 false 2>/dev/null
+    resetprop -p persist.debug.qs_enable_hardware_optimize true 2>/dev/null
+    resetprop -n debug.hwui.vivo_blur_dualKawase true 2>/dev/null
+    resetprop -n debug.hwui.vivo_blur_opt true 2>/dev/null
+    resetprop -p persist.blur.GPU.minlevel "$GPU_MIN" 2>/dev/null
+    resetprop -p persist.blur.GPU.duration "$GPU_DUR" 2>/dev/null
+    resetprop -n ro.vendor.vivo.software.windowdeformblur:min_blur_radius_temp "$RADIUS_TEMP" 2>/dev/null
+
+    ui_print "- Module active and updated (tap Action or reboot to apply)"
 fi

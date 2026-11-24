@@ -4,6 +4,9 @@ English | [Русский](README-RU.md)
 
 KernelSU module to unlock flagship blur, translucency, and premium UI effects on OriginOS 6 across iQOO and Vivo devices.
 
+> [!WARNING]
+> Starting from version `v0.8.0` (`main` branch), the config patcher is universal for all iQOO/Vivo devices. All versions below `v0.8.0` are strictly for **iQOO Z9** only.
+
 ## Overview
 
 On budget and midrange devices such as the iQOO Z9 (Snapdragon 7 Gen 3 / SM7550), OriginOS 6 visual effects are limited at the configuration table and framework check level:
