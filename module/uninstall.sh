@@ -26,6 +26,8 @@ resetprop -p -d persist.debug.qs_enable_hardware_optimize 2>/dev/null
 
 resetprop -d debug.blur.enable 2>/dev/null
 resetprop -d debug.blur.dynamic.frameRate 2>/dev/null
+resetprop -d debug.hwui.vivo_blur_dualKawase 2>/dev/null
+resetprop -d debug.hwui.vivo_blur_opt 2>/dev/null
 
 # 4. Remove injected spacesystem and blur HAL properties
 resetprop -d ro.vendor.vivo.software.spacesystem 2>/dev/null

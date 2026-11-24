@@ -2,8 +2,7 @@
 
 English | [Русский](README-RU.md)
 
-KernelSU module to unlock flagship blur, translucency, and premium UI effects on OriginOS 6.
-ONLY FOR Z9 YET
+KernelSU module to unlock flagship blur, translucency, and premium UI effects on OriginOS 6 across iQOO and Vivo devices.
 
 ## Overview
 
@@ -24,6 +23,10 @@ This module dynamically replaces configuration in-memory via KernelSU overlayfs 
 - Activate Space System v3 level 1 blur pipeline (`spacesystem` mode 2).
 - Switch system effect profile from Lite (`1`) to Full (`0`).
 - Enable native hardware blur, motion blur, and V-Glass translucency.
+- Universal device compatibility via dynamic patching of stock `/vendor/etc/vivo_config.ini` (`patch_config.sh`).
+- Factory support detection: warns and prompts via Volume keys (`Vol+` to continue, `Vol-` to abort) if premium UI effects are already enabled from the factory.
+- Three selectable optimization profiles (`High`, `Medium`, `Lite`) preserving all flagship UI effects while tuning blur radius and GPU boost.
+- Dual Kawase blur shader optimization (`debug.hwui.vivo_blur_dualKawase=true`) and hardware QS layer caching to eliminate notification shade lag.
 - Retain temporary root (temproot) safety with zero physical partition writes.
 - Robust installer with live update synchronization and protection against double mounting.
 - Full compatibility with metamodules such as Hybrid Mount.
@@ -90,7 +93,7 @@ The resulting package is placed in `out/premium-oos-v<VERSION>.zip`.
 
 ## Installation and Activation
 
-1. Transfer `out/premium-oos-v0.7.0.zip` to the device.
+1. Transfer `out/premium-oos-v0.8.0.zip` to the device.
 2. Flash the zip via KernelSU Manager (or APatch / Magisk).
 3. Activation:
    - For standard permanent root: reboot the device.
